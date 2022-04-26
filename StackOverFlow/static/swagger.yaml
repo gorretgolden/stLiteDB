@@ -1,0 +1,389 @@
+openapi: 3.0.1
+info:
+  title:  StackOverFlow-Lite
+  description: Online platform for posting questions and getting hte answers
+  version: '0.1'
+servers:
+  - url: http://127.0.0.1:5000
+paths:
+  /auth/login:
+
+    post:
+      description: Authenticates a registered user 
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - in: formData
+        name: email,
+        description: Email,
+        type: string
+      - in: formData
+        name: password,
+        description: Password,
+        type: string  
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_password:
+                  type: string
+                email:
+                  type: string
+            examples:
+              '0':
+                value: |2-
+                   {
+                             
+                          "email":"nabatanzigorret143@gmail.com",
+                          "user_password":"#golden@"
+                   }
+      responses:
+        '200':
+          description: Logged in successfully
+        '404':
+          description: Email not found
+        '402':
+          description: wrong password
+        '201':
+          description: Account disable
+        '500':
+          description: Internal Server error  
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+                  user_email:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NzkzNTk1MSwianRpIjoiMGJjNjk1NzQtNjhlMS00MTg1LWE5ODktYjVhNGNjYjViNGIyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6NCwibmJmIjoxNjQ3OTM1OTUxLCJleHAiOjE2NDc5MzY4NTF9.ir-M4ncw1kuhgarQYMotKg6nf7qog1W4fgI4TZ3dpG8", 
+                      "message": "You logged in successfully!", 
+                      "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NzkzNTk1MSwianRpIjoiNWEzM2FhZWYtNzY4NC00ZDk0LTkzNDctZGIwMTkyNzYxNTA0IiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjQsIm5iZiI6MTY0NzkzNTk1MSwiZXhwIjoxNjUwNTI3OTUxfQ.IZ1-qZ5RIsySOIUi7xFn-V17jSFm-1jIRhvpF_9A3NI", 
+                      "user_email": "nabatanzigorret143@gmail.com"
+                    }
+      servers:
+        - url: http://127.0.0.1:5000
+    servers:
+      - url: http://127.0.0.1:5000
+  
+  /auth/signup:
+    post:
+      description: Registers a new user
+      consumes:
+      - multipart/form-data
+      produces:
+      - application/json
+      parameters:
+      - in: formData
+        name: email,
+        description: Email,
+        type: string
+      - in: formData
+        name: user_password,
+        description: Password,
+        type: string   
+      - in: formData
+        name: username,
+        description: Username,
+        type: string 
+      - in: formData
+        name: phone_number
+        description: User Contact,
+        type: string 
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_password:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                username:
+                  type: string
+            examples:
+              '0':
+                value: |-
+                  {
+                          "username": "Kikonyogo Sadic",
+                          "email":"sadic123@gmail.com",
+                         "phone_number": "0751547655",
+                         "user_password":"#golden@"
+                        
+                      
+                  }
+      responses:
+        '200':
+          description: Auto generated using Swagger Inspector
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  message:
+                    type: string
+                  phone number:
+                    type: string
+                  password:
+                    type: string
+                  email:
+                    type: string
+              examples:
+                '0':
+                  value: |
+                    {
+                      "email": "sadic123@gmail.com", 
+                      "message": "new user created", 
+                      "name": "Kikonyogo Sadic", 
+                      "passowrd": "sha256$tykh87GkE7jNLT1w$793ad3304e6792b3de51b12706d43d3bc749a0c8f0ca6d8732f4d12fa0bdc067", 
+                      "phone number": "0751547655"
+                    }
+      servers:
+        - url: http://127.0.0.1:5000
+    servers:
+      - url: http://127.0.0.1:5000
+  /auth/users/:
+    get:
+      description: Retrieves all users
+      tags: 
+       - Authentication
+      responses:
+        '200':
+          description: returned successfully
+        '401':
+          description: User unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: integer
+              examples:
+                '0':
+                  value: |
+                    {
+                      "users": [
+                        [
+                          ABCD, 
+                          "0751547654", 
+                          "Wed, 16 Mar 2022 14:47:03 GMT", 
+                          "Nabatanzi Gorret", 
+                          "nabatanzigorret143@gmail.com", 
+                          "sha256$GQ9CBZ7RUxH1tqOQ$b573fa46a004c6d1371850b446a9e14ce3a8d12cee5ec49a3b533d8d563572a3"
+                        ], 
+        
+                     
+                        [
+                          SXCV, 
+                          "0751547655", 
+                          "Tue, 22 Mar 2022 12:23:01 GMT", 
+                          "Kikonyogo Sadic", 
+                          "sadic123@gmail.com", 
+                          "sha256$tykh87GkE7jNLT1w$793ad3304e6792b3de51b12706d43d3bc749a0c8f0ca6d8732f4d12fa0bdc067"
+                        ]
+                      ]
+                    }
+      servers:
+        - url: http://127.0.0.1:5000
+    servers:
+      - url: http://127.0.0.1:5000  
+  /questions/:
+    post:
+      description: Creates a new question
+      parameters:
+      - in: body
+        name: question_id
+        description: Random id of the question
+        type: string
+      - in: body
+        name: user_id
+        description: id of the registered user
+        type: string
+      - in: body
+        name: title
+        description: Title of the question
+        type: string 
+      - in: body
+        name: body
+        description: content to the posted question
+        type: string   
+      - in: body
+        name: date_created
+        description: Date and time at which the question was posted
+        type: datetime 
+      tags:
+        - Questions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                question_id:
+                  type: string
+                user_id:
+                  type: string
+                title:
+                  type: string
+                body:
+                  type: string
+                date_created:
+                  type: datetime
+            examples:
+              '0':
+                value: |2-
+                   {
+                             "question_id": "FXC",
+                              "user_id":"SXCD",
+                             "title": "How to run flask",
+                            "body":  "Am a python beginner and have failed to run my flask app",
+                             "date_created": "Tue 19 2022"
+                   }
+      responses:
+        '500':
+          description: Question posted successfully
+        '401':
+          description: User unauthorized
+      servers:
+        - url: http://127.0.0.1:5000
+    servers:
+      - url: http://127.0.0.1:5000
+# /questions/:
+#   get:
+#       description: Retrieves all questions
+#       tags: 
+#        - Questions
+#       responses:
+#         '200':
+#           description: returned successfully
+#         '401':
+#           description: User unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 type: object
+#                 properties:
+#                   questions:
+#                     type: array
+#                     items:
+#                       type: array
+#                       items:
+#                         type: integer
+#               examples:
+#                 '0':
+#                   value: |
+#                     {
+#                       "questions": [
+#                         [
+#                           "AZX", 
+#                           "XVF", 
+#                           "Wed, 16 Mar 2022 14:47:03 GMT", 
+#                           "How to run flask", 
+#                           "Failed to run flask on linux any help", 
+                         
+#                         ] 
+#                       ]
+#                     }
+#       servers:
+#         - url: http://127.0.0.1:5000
+      
+components:
+  schemas:
+    Questions:
+      type: object
+      properties:
+        questionId:
+          type: string
+          example: ABC
+        title:
+          type: string
+          example: How to use python data structure
+        body:
+          type: string
+          example: Am a python beginner but failed to work with python lists and dictionaries
+        date_posted:
+           type: datetime
+           example: Fri, 15 Apr 2022 18:38:08 GMT
+        user_id:
+          type: string
+          example: QSXC
+        tag:
+          type: string
+          example: Python
+    Users:
+      type: object
+      properties:
+        user_id:
+          type: string
+          example: AXCV
+        username:
+          type: string
+          example: Nabatanzi Gorret
+        email:  
+          type: string
+          example: "nabatanzigorret143@gmail.com"
+        user_password:
+          type: string
+          example: #golden@
+        phone_number:
+           type: string
+           example: 0751547654  
+         
+    Answers: 
+      type: object
+      properties:
+        answer_id:
+          type: string
+          example: AXD
+        userId:
+          type: string
+          example: QVBC
+        questionId:
+          type: string
+          example: QSX
+        body:
+           type: string
+           example: Refer to python docs for lists in details
+        is_accepted:
+           type: boolean
+           example: False   
+        date_posted:
+          type: datetime
+          example: Fri, 15 Apr 2022 18:38:08 GMT               
+          
+       
+  securitySchemes:
+    oauth2:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: http://yourauthurl.com
+          scopes:
+            scope_name: Enter your scopes here
