@@ -6,7 +6,7 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_sqlalchemy import SQLAlchemy
 from StackOverFlow.models.models import db
-
+from   flask_marshmallow import Marshmallow
 database_uri = 'postgresql+psycopg2://{dbuser}:{dbpass}@{dbhost}/{dbname}'.format(
     dbuser=os.environ['DBUSER'],
     dbpass=os.environ['DBPASS'],
@@ -25,7 +25,7 @@ def create_app(test_config=None):
        app.config.from_mapping(
 
         CORS_HEADERS= 'Content-Type',
-        SQLALCHEMY_DATABASE_URI = database_uri,
+        SQLALCHEMY_DATABASE_URI = "sqlite:///stackoverflow",
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY')
  
@@ -39,6 +39,7 @@ def create_app(test_config=None):
     app.static_folder = 'static'
    
     JWTManager(app)
+    Marshmallow(app)
     
    
     from StackOverFlow.questions.routes import questions
@@ -67,5 +68,6 @@ def create_app(test_config=None):
     db.app = app
     db.init_app(app)
     db.create_all()
+   
     return app
 

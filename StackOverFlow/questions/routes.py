@@ -8,7 +8,6 @@ questions = Blueprint('questions', __name__,url_prefix="/questions")
 
 #retrieving all questions 
 @questions.route("/", methods=['GET'])
-@jwt_required()
 def all_questions():
     #ensuring that a user has logged in
     all_questions = Question.query.all()
@@ -16,17 +15,17 @@ def all_questions():
 
 
 #retrieving all questions for a user
-@questions.route("/users", methods=['GET'])
+@questions.route("/users/<int:user_id>", methods=['GET'])
 @jwt_required()
-def all_user_questions():
+def all_user_questions(user_id):
     #ensuring that a user has logged in
-    current_user = get_jwt_identity()
-    all_questions = Question.query.filter_by(user_id=current_user).all()
+    user_id= get_jwt_identity()
+    all_questions = Question.query.filter_by(id=user_id).all()
     return jsonify(all_questions),200
 
 
 #retrieving single questions item
-@questions.route("/<string:questionId>", methods=['GET'])
+@questions.route("/<int:questionId>", methods=['GET'])
 def single_question(questionId):
     single_question = Question.query.filter_by(id=questionId).first()
     
@@ -50,6 +49,7 @@ def single_user_question(questionId):
 @questions.route("/", methods=["POST"])
 @jwt_required()
 def new_questions():
+    
     if request.method == "POST":
         
         user_id = get_jwt_identity()
@@ -104,12 +104,12 @@ def delete_questions(questionId):
 
 
 #creating answers
-@questions.route("/<string:questionId>/answers", methods=["POST"])
+@questions.route("/<int:question_id>/answers", methods=["POST"])
 @jwt_required()
-def new_answers(questionId):
+def new_answers(question_id):
     if request.method == "POST":
         
-        question_id =  request.json['question_id']
+        question_id =  int(request.json['question_id'])
         user_id = get_jwt_identity()
         body = request.json['body']
        
@@ -123,7 +123,7 @@ def new_answers(questionId):
            
 
         #inserting values into the questions_list
-        new_answer = Answer(questionId=question_id,body=body,user_id=user_id)
+        new_answer = Answer(question_id=question_id,body=body,user_id=user_id)
         db.session.add(new_answer)
         db.session.commit()
        
@@ -133,7 +133,7 @@ def new_answers(questionId):
     
 
 #Viewing an answer by id
-@questions.route("/<string:answer_id>/answers", methods=["POST"])
+@questions.route("/<int:answer_id>/answers")
 @jwt_required()
 def single_answer(answer_id):
     single_answer = Answer.query.filter_by(id=answer_id).first()
@@ -141,7 +141,7 @@ def single_answer(answer_id):
     return jsonify(single_answer),200
 
 #retrieving all answers for a specific user
-@questions.route("/answers/<string:user_id>", methods=['GET'])
+@questions.route("/answers/<int:user_id>")
 @jwt_required()
 def user_answers(user_id):
     #ensuring that a user has logged in

@@ -54,16 +54,19 @@ def register_user():
 @auth.route('/login', methods= ['POST'])
 
 def login_user():
-      
-   
-        if request.method == 'POST':
-          email = request.json["email"]
-          password = request.json['user_password']
         
-
-          user = User.query.filter_by(email=email).first()
+   
+         if request.method == 'POST':
+           email = request.json["email"]
+           password = request.json['password']
+        
+          #empty fields
+           if not email and password:
+                return jsonify({'error': 'All fields are required'}), 400
+          
+           user = User.query.filter_by(email=email).first()
           #check if email exits
-          if user:
+           if user:
             is_pass_correct = check_password_hash(user.password, password)
 
             if is_pass_correct:
@@ -81,14 +84,26 @@ def login_user():
                 }), 200
  
                 
-          return jsonify({'error': 'Wrong credentials'}), 401
+           return jsonify({'error': 'Wrong credentials'}), 401
+
+      
           
         
 
+#retrieving all users
+@auth.route("/users", methods=['GET'])
+def all_users():
+    all_users= User.query.all()
+
+    return jsonify({"users":all_users}),200
 
 
 
+@auth.route("/users/<int:user_id>", methods=['GET'])
+def user_id(user_id):
+    #ensuring that a user has logged in
 
- 
+    user = User.query.filter_by(id=user_id).first()
+    return jsonify(user),200
 
 
